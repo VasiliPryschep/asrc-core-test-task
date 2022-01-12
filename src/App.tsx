@@ -1,26 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { styled } from "@mui/material/styles";
+import Typography from '@mui/material/Typography';
+import { getPixabayData } from './api/pixabayApi';
+import AppBar from './components/AppBar';
+import { PixabayDataType } from './types/types';
+import ImageList from './components/ImageBlocks';
+import { textKeys } from './utils/textResources';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const ImageListWrapper = styled('div')({
+    marginTop: 80
+});
+
+const App: React.FC = () => {
+
+    const [searchText, setSearchText] = useState('');
+    const [pixabayData, setPixabayData] = useState<PixabayDataType | null>(null);
+
+    useEffect(() => {
+        const fetchPixabayData = async () => {
+            try {
+                let data;
+                if (searchText) {
+                    data = await getPixabayData(searchText);
+                } else {
+                    data = null;
+                }
+                setPixabayData(data);
+            } catch (error) {
+                alert(error);
+            }
+        };
+        fetchPixabayData();
+    }, [searchText]);
+
+    return <>
+        <AppBar searchText={searchText} setSearchText={setSearchText}/>
+        <ImageListWrapper>
+            {
+                pixabayData
+                    ? <ImageList items={pixabayData.hits}/>
+                    : <Typography variant="h5" align="center">
+                        {textKeys.noContent}
+                    </Typography>
+            }
+        </ImageListWrapper>
+    </>
 }
 
 export default App;

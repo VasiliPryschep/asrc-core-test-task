@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import { getPixabayData } from './api/pixabayApi';
 import AppBar from './components/AppBar';
 import { PixabayDataType } from './types/types';
-import ImageList from './components/ImageBlocks';
+import ImageList from './components/ImageList';
 import { textKeys } from './utils/textResources';
 
 const ImageListWrapper = styled('div')({
